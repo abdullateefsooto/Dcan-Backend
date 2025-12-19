@@ -95,7 +95,7 @@ const updateOrderStatus = asyncHandler(async (req, res) => {
 
 /* ============================================================================
    @desc    Delete an order
-   @route   DELETE /api/orders/:id
+   @route   DELETE /orders/:id
    @access  Private (User or Admin)
    ============================================================================
 */
