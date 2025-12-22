@@ -3,22 +3,6 @@ require("dotenv").config();
 const cors = require("cors");           // Allows cross-origin requests (frontend ↔ backend)
 const PORT = process.env.PORT || 5000;  
 const app = express();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
-// ======== STRIPE PAYMENT INTENT ROUTE ======== //
-app.post("/create-payment-intent", async (req, res) => {
-  const { amount } = req.body; // amount in cents
-  try {
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount,
-      currency: "usd", // or "ngn" for Nigerian Naira
-    });
-    res.json({ clientSecret: paymentIntent.client_secret });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
 
 
 // ======== MIDDLEWARES ======== //
