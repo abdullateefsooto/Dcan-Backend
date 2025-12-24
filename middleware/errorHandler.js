@@ -1,17 +1,3 @@
-// const errorHandler = (err, req, res, next) => {
-//   console.error("Error:", err.message);
-
-//   res.status(err.status || 500).json({
-//     success: false,
-//     message: err.message || "Server Error",
-//   });
-// };
-
-// module.exports = errorHandler;
-
-
-
-// Centralized error handler middleware
 const errorHandler = (err, req, res, next) => {
   console.error("🔥 Error caught by middleware: errorHandler");
   console.error(err.stack);

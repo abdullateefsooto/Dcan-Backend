@@ -33,6 +33,9 @@ app.use("/paystack", paymentRoutes);
 const userRoutes = require("./routes/userRoutes");
 app.use("/users", userRoutes); // add this line
 
+const adminRoute = require("./routes/adminRoute");
+app.use("/admin", adminRoute);
+
 
 // Import and use authentication routes (e.g., register, login)
 const authRoutes = require("./routes/authRoutes");
