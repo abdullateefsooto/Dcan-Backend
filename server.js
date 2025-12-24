@@ -8,9 +8,20 @@ const app = express();
 // ======== MIDDLEWARES ======== //
 
 // Enable CORS so frontend apps can communicate with this backend
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://dcan-frontend-project.vercel.app"
+];
 app.use(cors({
-    origin: ["http://localhost:5173", "https://dcan-frontend-project.vercel.app", "https://dcan-backend.onrender.com/products"],  // Adjust this to your frontend's URL
-    credentials: true,
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true); // allow Postman / server-to-server
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  credentials: true, // allow cookies / auth headers
 }));
 
 // Parse incoming JSON request bodies
