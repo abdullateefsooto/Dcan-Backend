@@ -9,7 +9,7 @@ const app = express();
 
 // Enable CORS so frontend apps can communicate with this backend
 app.use(cors({
-    origin: ["http://localhost:5173", "https://dcan-frontend-project.vercel.app"],  // Adjust this to your frontend's URL
+    origin: ["http://localhost:5173", "https://dcan-frontend-project.vercel.app", "https://dcan-backend.onrender.com/products"],  // Adjust this to your frontend's URL
     credentials: true,
 }));
 
