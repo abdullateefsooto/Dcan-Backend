@@ -3,25 +3,24 @@ require("dotenv").config();
 const cors = require("cors");           // Allows cross-origin requests (frontend ↔ backend)
 const PORT = process.env.PORT || 5000;  
 const app = express();
+const path = require("path");
 
+
+
+
+
+// Serve static files
+app.use(express.static(path.join(__dirname, "frontend/dist")));
+
+// Catch ALL routes and return index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "frontend/dist", "index.html"));
+});
 
 // ======== MIDDLEWARES ======== //
-
 // Enable CORS so frontend apps can communicate with this backend
-const allowedOrigins = [
-  "http://localhost:5173",
-  "https://dcan-frontend-project.vercel.app"
-];
 app.use(cors({
-  origin: function(origin, callback){
-    if(!origin) return callback(null, true); // allow Postman / server-to-server
-    if(allowedOrigins.indexOf(origin) === -1){
-      const msg = `The CORS policy for this site does not allow access from the specified Origin.`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  credentials: true, // allow cookies / auth headers
+  origin: ['http://localhost:5173', 'https://dcan-frontend-project.vercel.app']
 }));
 
 // Parse incoming JSON request bodies
