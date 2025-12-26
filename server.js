@@ -1,81 +1,63 @@
-const express = require("express");     
-require("dotenv").config();            
-const cors = require("cors");           // Allows cross-origin requests (frontend ↔ backend)
-const PORT = process.env.PORT || 5000;  
+const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+
+const connectDB = require("./config/db");
+const cloudinary = require("./config/cloudinary");
+
 const app = express();
-const path = require("path");
+const PORT = process.env.PORT || 5000;
 
+/* =======================
+   DATABASE
+======================= */
+connectDB();
+cloudinary;
 
-
-
-
-// Serve static files
-app.use(express.static(path.join(__dirname, "frontend/dist")));
-
-// Catch ALL routes and return index.html
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "frontend/dist", "index.html"));
-});
-
-// ======== MIDDLEWARES ======== //
-// Enable CORS so frontend apps can communicate with this backend
+/* =======================
+   MIDDLEWARES
+======================= */
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://dcan-frontend-project.vercel.app']
+  origin: [
+    "http://localhost:5173",
+    "https://dcan-frontend-project.vercel.app"
+  ],
+  credentials: true,
 }));
 
-// Parse incoming JSON request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// ======== DATABASE CONNECTION ======== //
-const connectDB = require("./config/db");  // Import the MongoDB connection function
-connectDB();                               // Call it to connect to MongoDB
-
-const cloudinary = require("./config/cloudinary"); // Import Cloudinary config
-cloudinary; // Initialize Cloudinary (if needed elsewhere)
-
-
-const paymentRoutes = require("./routes/paymentRoutes");
-app.use("/paystack", paymentRoutes);
-
-// ======== ROUTES ======== //
-
-const userRoutes = require("./routes/userRoutes");
-app.use("/users", userRoutes); // add this line
-
-const adminRoute = require("./routes/adminRoute");
-app.use("/admin", adminRoute);
-
-
-// Import and use authentication routes (e.g., register, login)
-const authRoutes = require("./routes/authRoutes");
-app.use("/auth", authRoutes);  // All routes in authRoutes will be prefixed with /auth
-
-const productRoutes = require("./routes/productRoutes");
-const orderRoutes = require("./routes/orderRoutes");
-
-app.use("/products", productRoutes);
-app.use("/orders", orderRoutes);
-
-
-// Default route to test the server
-app.get("/", (req, res) => {
-    res.send("Dcan Mart!!!");
-});
-
-// ======== CUSTOM MIDDLEWARES ======== //
-
-// Import and use a custom logger middleware (for logging requests)
+// Logger (before routes)
 const logger = require("./middleware/logger");
 app.use(logger);
 
-// Import and use the global error handler middleware
+/* =======================
+   ROUTES
+======================= */
+app.use("/auth", require("./routes/authRoutes"));
+app.use("/users", require("./routes/userRoutes"));
+app.use("/admin", require("./routes/adminRoute"));
+app.use("/products", require("./routes/productRoutes"));
+app.use("/orders", require("./routes/orderRoutes"));
+app.use("/paystack", require("./routes/paymentRoutes"));
+
+/* =======================
+   HEALTH CHECK
+======================= */
+app.get("/", (req, res) => {
+  res.send("✅ DCAN MART is running");
+});
+
+/* =======================
+   ERROR HANDLER
+======================= */
 const errorHandler = require("./middleware/errorHandler");
 app.use(errorHandler);
 
-// ======== START SERVER ======== //
-
-// Start the Express server and listen port 5000
+/* =======================
+   START SERVER
+======================= */
 app.listen(PORT, () => {
-    console.log(`✅ Server is running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
